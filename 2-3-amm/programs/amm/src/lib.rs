@@ -1,19 +1,31 @@
+#![allow(unexpected_cfgs)]
 use anchor_lang::prelude::*;
 
-use anchor_spl::{associated_token::AssociatedToken, token::{mint_to, Mint, Token, TokenAccount}};
-use crate::state::Config;
+mod errors;
+mod state;
+mod instructions;
 
-declare_id!("5pixSwsmnuvksmWQ1GmEUrSeE9DjXSxC9dP4h9pzS9sS");
+use instructions::*;
+
+declare_id!("7HhA6WBHpugdJGm8svXpDtUsfWR87G5Vt7XihJAjc6MT");
 
 #[program]
 pub mod amm {
     use super::*;
 
-    pub fn initialize(ctx: Context<Initialize>) -> Result<()> {
-        msg!("Greetings from: {:?}", ctx.program_id);
-        Ok(())
+    pub fn initialize(ctx: Context<Initialize>, seed: u64, fee: u16, authority: Option<Pubkey>) -> Result<()> {
+        ctx.accounts.init(seed, fee, authority, ctx.bumps)
+    }
+
+    pub fn deposit(ctx: Context<Deposit>, amount: u64, max_x: u64, max_y: u64) -> Result<()> {
+        ctx.accounts.deposit(amount, max_x, max_y)
+    }
+
+    pub fn withdraw(ctx: Context<Withdraw>, amount: u64, max_x: u64, max_y: u64) -> Result<()> {
+        ctx.accounts.withdraw(amount, max_x, max_y)
+    }
+
+    pub fn swap(ctx: Context<Swap>, is_x: bool, amount_in: u64, min_amount_out: u64) -> Result<()> {
+        ctx.accounts.swap(is_x, amount_in, min_amount_out)
     }
 }
-
-#[derive(Accounts)]
-pub struct Initialize {}
