@@ -1,3 +1,2 @@
-pub mod say_hello;
-
-pub use say_hello::*;
+pub mod initialize;
+pub use initialize::*;
